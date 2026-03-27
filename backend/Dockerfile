@@ -2,21 +2,25 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# 换国内源 + 升级 pip
-RUN pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/ \
-    && pip install --upgrade pip
+# 升级 pip（可选）
+RUN pip install --upgrade pip
 
 # 安装 uv
 RUN pip install uv
 
-# 复制配置
-COPY pyproject.toml ./
+# 配置 uv 镜像源（关键）
+ENV UV_INDEX_URL=https://mirrors.aliyun.com/pypi/simple/
+ENV UV_EXTRA_INDEX_URL=https://pypi.org/simple/
 
-# 关键！不加 --frozen，自动生成 lockfile
+# 复制依赖文件（利用缓存）
+COPY pyproject.toml uv.lock* /app/
+
+# 安装依赖
 RUN uv sync
 
 # 复制代码
-COPY . .
+COPY . /app
 
 ENV ENV=dev
+
 CMD ["uv", "run", "main.py"]
