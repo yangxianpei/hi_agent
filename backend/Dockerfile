@@ -1,22 +1,19 @@
-FROM python:3.13-slim
-
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=1
+FROM python:3.11-slim
 
 WORKDIR /app
 
-# 先拷贝依赖描述，利用 Docker 层缓存
-COPY pyproject.toml README.md ./
+# 关键！换成国内 pip 源
+RUN pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/
+RUN pip config set install.trusted-host mirrors.aliyun.com
 
-# 安装项目依赖
+COPY requirements.txt .
+COPY pyproject.toml .
+
+# 安装依赖（现在用国内源，飞快）
 RUN pip install --upgrade pip && pip install .
 
-# 再拷贝项目代码
-COPY app ./app
-COPY run.py ./
+COPY . .
 
-EXPOSE 3000
+EXPOSE 8000
 
-# 生产模式不使用 --reload
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "3000"]
+CMD ["uvicorn", "main:app", "--host=0.0.0.0", "--port=8000"]
