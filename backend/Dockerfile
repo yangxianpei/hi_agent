@@ -14,10 +14,10 @@ RUN pip install uv
 ENV UV_INDEX_URL=https://mirrors.aliyun.com/pypi/simple/
 
 # 复制依赖文件（利用缓存）
-COPY pyproject.toml uv.lock* /app/
+COPY pyproject.toml /app/
 
 # 安装依赖（锁版本）
-RUN uv sync --frozen
+RUN uv sync
 
 # 复制代码
 COPY . /app
