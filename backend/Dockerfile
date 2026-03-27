@@ -1,22 +1,20 @@
-# 使用轻量 Python 镜像
-FROM python
+FROM python:3.11-slim
 
 WORKDIR /app
 
-# 先复制依赖文件，利用缓存
+# 安装 curl（必须）
+RUN apt-get update && apt-get install -y curl
+
+# 安装 uv（官方推荐方式）
+RUN curl -Ls https://astral.sh/uv/install.sh | sh
+
+# 把 uv 加到 PATH
+ENV PATH="/root/.local/bin:$PATH"
+
 COPY pyproject.toml uv.lock* /app/
 
-# 安装 uv
-RUN pip install --no-cache-dir uv
-
-# 安装依赖
 RUN uv sync --frozen --index-url https://mirrors.aliyun.com/pypi/simple/
 
-# 再复制代码
 COPY . /app
 
-# 设置默认环境变量为 dev，可在启动时覆盖
-ENV ENV=dev
-
-# 使用 uvicorn 运行
 CMD ["uv", "run", "main.py"]
