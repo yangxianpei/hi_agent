@@ -1,19 +1,22 @@
-FROM python:3.11-slim
+# 使用轻量 Python 镜像
+FROM python
 
 WORKDIR /app
 
-# 关键！换成国内 pip 源
-RUN pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/
-RUN pip config set install.trusted-host mirrors.aliyun.com
+# 先复制依赖文件，利用缓存
+COPY pyproject.toml uv.lock* /app/
 
-COPY requirements.txt .
-COPY pyproject.toml .
+# 安装 uv
+RUN pip install --no-cache-dir uv
 
-# 安装依赖（现在用国内源，飞快）
-RUN pip install --upgrade pip && pip install .
+# 安装依赖
+RUN uv sync --frozen --index-url https://mirrors.aliyun.com/pypi/simple/
 
-COPY . .
+# 再复制代码
+COPY . /app
 
-EXPOSE 8000
+# 设置默认环境变量为 dev，可在启动时覆盖
+ENV ENV=dev
 
-CMD ["uvicorn", "main:app", "--host=0.0.0.0", "--port=8000"]
+# 使用 uvicorn 运行
+CMD ["uv", "run", "main.py"]
