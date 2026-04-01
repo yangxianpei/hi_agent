@@ -13,7 +13,10 @@ from concurrent.futures import ThreadPoolExecutor
 from app.service.process_video import process_video
 from app.utils.video_task_events import emit, snapshot
 
-executor = ThreadPoolExecutor(max_workers=4)
+# 串行处理视频任务：一次只跑一个视频
+process_executor = ThreadPoolExecutor(max_workers=1)
+# 轻量后台任务（目录清理）单独线程，避免阻塞视频队列
+maintenance_executor = ThreadPoolExecutor(max_workers=1)
 router = APIRouter(prefix="/v1", tags=["视频"])
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 OUTPUT_DIR = PROJECT_ROOT / "output"
@@ -70,14 +73,14 @@ async def video(file: UploadFile = File(...)):
 
     output_dir = OUTPUT_DIR / file_name
     output_dir.mkdir(parents=True, exist_ok=True)
-    executor.submit(_cleanup_old_task_dirs, MAX_TASK_DOCS, file_name)
+    maintenance_executor.submit(_cleanup_old_task_dirs, MAX_TASK_DOCS, file_name)
     wav_file_path = output_dir / output_display_name
     file_path = output_dir / display_name
     with open(file_path, "wb") as f:
         f.write(file_content)
 
     emit(file_name, "queued", "任务已入队，等待处理", {"task_key": file_name})
-    executor.submit(process_video, str(file_path), str(wav_file_path), str(output_dir))
+    process_executor.submit(process_video, str(file_path), str(wav_file_path), str(output_dir))
 
     return JSONResponse(
         {

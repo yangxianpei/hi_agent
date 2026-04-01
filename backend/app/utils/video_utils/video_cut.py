@@ -6,7 +6,7 @@ from concurrent.futures import ThreadPoolExecutor
 from typing import Callable
 from app.utils.video_utils.ocr_similarity import select_similar_frames
 from app.utils.video_utils.com_helper import results_ai_video_cut_to_md
-executor = ThreadPoolExecutor(max_workers=10)
+executor = ThreadPoolExecutor(max_workers=3)
 
 
 def _run_cut_task(video_path: str, start_time: float, end_time: float, frame_dir: Path, frame_interval_sec: float):
