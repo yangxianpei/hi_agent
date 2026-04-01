@@ -10,7 +10,7 @@ RUN pip install --upgrade pip
 # 安装 uv
 RUN pip install uv
 
-# uv 国内源（给 uv 用，关键！）
+# uv 国内源（给 uv 用，关键！1）
 ENV UV_INDEX_URL=https://mirrors.aliyun.com/pypi/simple/
 
 # 复制依赖文件（利用缓存）
