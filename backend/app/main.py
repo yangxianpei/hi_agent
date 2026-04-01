@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.router.chat import router as chat_router
@@ -15,7 +16,11 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(docs_url=None, redoc_url=None, title="Backend API", version="0.1.0", lifespan=lifespan)
 
-app.mount("/output", StaticFiles(directory="output"), name="output")
+# 项目根目录（backend）下的 output，避免受运行时 cwd 影响
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+OUTPUT_DIR = PROJECT_ROOT / "output"
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/output", StaticFiles(directory=str(OUTPUT_DIR)), name="output")
 
 app.add_middleware(
     CORSMiddleware,
