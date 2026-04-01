@@ -58,11 +58,16 @@ async def video(file: UploadFile = File(...)):
 
     file_content = await file.read()
     if len(file_content) == 0:
-        raise HTTPException(status_code=400, detail="文件为空")
+        raise HTTPException(status_code=400, detail="文件为空") 
     task_id = str(uuid.uuid4())[:16]
     file_name = f"{task_id}_{Path(file.filename).stem}"
     display_name = f"{file_name}{file_extension}"
     output_display_name = f"{file_name}.wav"
+    #创建output目录
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
+
+
     output_dir = OUTPUT_DIR / file_name
     output_dir.mkdir(parents=True, exist_ok=True)
     executor.submit(_cleanup_old_task_dirs, MAX_TASK_DOCS, file_name)
