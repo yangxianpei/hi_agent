@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.12-slim
 
 WORKDIR /app
 
@@ -14,10 +14,10 @@ RUN pip install uv
 ENV UV_INDEX_URL=https://mirrors.aliyun.com/pypi/simple/
 
 # 复制依赖文件（利用缓存）
-COPY pyproject.toml /app/
+COPY pyproject.toml uv.lock /app/
 
 # 安装依赖（锁版本）
-RUN uv sync
+RUN uv sync --frozen
 
 # 复制代码
 COPY . /app
