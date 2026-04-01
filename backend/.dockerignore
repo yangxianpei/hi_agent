@@ -6,7 +6,6 @@ __pycache__
 *.pyo
 *.pyd
 .Python
-uv.lock
 qa.py
 qa copy.py
 assets
