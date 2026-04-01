@@ -27,3 +27,18 @@ dependencies = [
     "torchaudio>=2.11.0",
     "rapidocr-onnxruntime>=1.4.4",
 ]
+
+[tool.uv]
+# 【关键修改】删除强制 Linux 环境的配置，让 uv 自动适配 Windows 系统
+# 原行已删除：environments = ["sys_platform == 'linux' and platform_machine == 'x86_64'"]
+
+[tool.uv.sources]
+# 保留 PyTorch CPU 源配置，确保 Windows 下载 CPU 版本
+torch = { index = "pytorch-cpu" }
+torchvision = { index = "pytorch-cpu" }
+torchaudio = { index = "pytorch-cpu" }
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true  # 仅 PyTorch 系列包使用该源，避免污染其他依赖
