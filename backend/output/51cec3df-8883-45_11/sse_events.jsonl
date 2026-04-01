@@ -1,4 +1,0 @@
-{"ts": "2026-04-01T07:35:02.615643+00:00", "stage": "queued", "message": "任务已入队，等待处理", "data": {"task_key": "51cec3df-8883-45_11"}}
-{"ts": "2026-04-01T07:35:02.619865+00:00", "stage": "started", "message": "开始处理", "data": {"file_path": "D:\\test\\hi_agent\\backend\\output\\51cec3df-8883-45_11\\51cec3df-8883-45_11.mp4"}}
-{"ts": "2026-04-01T07:35:02.625193+00:00", "stage": "asr_started", "message": "语音识别中", "data": {}}
-{"ts": "2026-04-01T07:35:57.472670+00:00", "stage": "error", "message": "invalid model repo path The request model:  does not exist!", "data": {"error": "invalid model repo path The request model:  does not exist!"}}
