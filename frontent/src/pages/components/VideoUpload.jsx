@@ -5,6 +5,8 @@ import { useNavigate, redirect } from 'react-router-dom'
 import { message } from 'antd'
 // import { uploadVideo } from '../api/videoService'
 
+const MAX_VIDEO_SIZE = 100 * 1024 * 1024 // 100MB
+
 function VideoUpload({ onUploadSuccess, onViewHistory, currentTask, onBackToProcessing }) {
     const navigate = useNavigate()
     const [selectedFiles, setSelectedFiles] = useState([])
@@ -17,10 +19,24 @@ function VideoUpload({ onUploadSuccess, onViewHistory, currentTask, onBackToProc
 
     const handleFileSelect = (files) => {
         const fileList = Array.from(files || [])
-        const validFiles = fileList.filter(file => file.type.startsWith('video/'))
+        const videoFiles = fileList.filter(file => file.type.startsWith('video/'))
+        const oversizeFiles = videoFiles.filter(file => file.size > MAX_VIDEO_SIZE)
+        const validFiles = videoFiles.filter(file => file.size <= MAX_VIDEO_SIZE)
+
+        if (videoFiles.length === 0) {
+            setError('请选择有效的视频文件')
+            return
+        }
+
+        if (oversizeFiles.length > 0) {
+            const names = oversizeFiles.slice(0, 2).map(file => file.name).join('、')
+            const suffix = oversizeFiles.length > 2 ? ' 等文件' : ''
+            const msg = `${names}${suffix} 超过 100MB 限制`
+            setError(msg)
+            message.error(msg)
+        }
 
         if (validFiles.length === 0) {
-            setError('请选择有效的视频文件')
             return
         }
 
@@ -222,7 +238,7 @@ function VideoUpload({ onUploadSuccess, onViewHistory, currentTask, onBackToProc
                                     拖拽视频文件到这里
                                 </p>
                                 <div className="mt-4 inline-flex items-center space-x-2 px-4 py-2 bg-gray-100 rounded-full">
-                                    <span className="text-sm text-gray-600">支持 MP4, AVI, MOV, MKV 等格式</span>
+                                    <span className="text-sm text-gray-600">支持 MP4, AVI, MOV, MKV 等格式（单文件 ≤ 100MB）</span>
                                 </div>
                             </div>
                         </div>
