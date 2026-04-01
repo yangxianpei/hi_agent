@@ -2,7 +2,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.router.chat import router as chat_router
-
+from app.router.video import router as video_router
+from fastapi.staticfiles import StaticFiles  # 必须导入
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """应用启动事件"""
@@ -12,8 +13,9 @@ async def lifespan(app: FastAPI):
     yield
     print("stopping...")
 
+app = FastAPI(docs_url=None, redoc_url=None, title="Backend API", version="0.1.0", lifespan=lifespan)
 
-app = FastAPI(title="Backend API", version="0.1.0", lifespan=lifespan)
+app.mount("/output", StaticFiles(directory="output"), name="output")
 
 app.add_middleware(
     CORSMiddleware,
@@ -23,7 +25,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(chat_router, prefix="/api")
-
+app.include_router(video_router, prefix="/api")
 @app.get("/")
 def read_root() -> dict[str, str]:
     return {"message": "FastAPI is running"}

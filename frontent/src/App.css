@@ -1,9 +1,13 @@
+
+
 :root {
   --page-bg: #FFFFFF;
   --page-bg-accent: #FFFFFF;
   --panel-bg: #fcfcfe;
   --panel-border: #e6e9f0;
   --panel-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+
+
 }
 
 .chat-app-shell {
@@ -79,3 +83,6 @@
     opacity: 0;
   }
 }
+
+
+

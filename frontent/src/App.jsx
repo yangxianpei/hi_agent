@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { MdPreview } from 'md-editor-rt'
 import 'md-editor-rt/lib/preview.css'
 import './App.css'
+import { useNavigate } from 'react-router-dom'
 import {
   Avatar,
   Badge,
@@ -37,6 +38,7 @@ const { Text, Title } = Typography
 
 function App() {
   const createMessageId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
+  const navigate = useNavigate()
   const [input, setInput] = useState('')
   const [startSending, setStartSending] = useState({})
   const [sending, setSending] = useState(false)
@@ -700,6 +702,12 @@ function App() {
           </Space>
 
           <Space size={10}>
+            <Button size="small" type="primary">
+              聊天
+            </Button>
+            <Button size="small" onClick={() => navigate('/video_parse')}>
+              video_parse
+            </Button>
             {/* <Tag color="geekblue" style={{ marginInlineEnd: 0 }}>
               aaaa
             </Tag> */}

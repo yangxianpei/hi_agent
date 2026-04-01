@@ -1,0 +1,10 @@
+{"ts": "2026-04-01T07:38:16.382157+00:00", "stage": "queued", "message": "任务已入队，等待处理", "data": {"task_key": "0f65d8d7-e29e-47_11"}}
+{"ts": "2026-04-01T07:38:16.401142+00:00", "stage": "started", "message": "开始处理", "data": {"file_path": "D:\\test\\hi_agent\\backend\\output\\0f65d8d7-e29e-47_11\\0f65d8d7-e29e-47_11.mp4"}}
+{"ts": "2026-04-01T07:38:16.405972+00:00", "stage": "asr_started", "message": "语音识别中", "data": {}}
+{"ts": "2026-04-01T07:39:14.178362+00:00", "stage": "asr_done", "message": "ASR 与段落合并完成", "data": {"segments": 1}}
+{"ts": "2026-04-01T07:39:16.380585+00:00", "stage": "origin_md_done", "message": "已生成 origin_result.md", "data": {}}
+{"ts": "2026-04-01T07:39:16.393581+00:00", "stage": "video_cut_submitted", "message": "抽帧任务已提交后台线程", "data": {}}
+{"ts": "2026-04-01T07:39:16.395344+00:00", "stage": "ai_started", "message": "开始生成 AI 解读", "data": {}}
+{"ts": "2026-04-01T07:39:16.820223+00:00", "stage": "video_cut_done", "message": "抽帧与 Ai_video_cut_result.md 已完成", "data": {"path": "Ai_video_cut_result.md"}}
+{"ts": "2026-04-01T07:39:29.018036+00:00", "stage": "ai_done", "message": "已生成 Ai_result.md", "data": {}}
+{"ts": "2026-04-01T07:39:29.019267+00:00", "stage": "finished", "message": "主流程处理完成（抽帧若后台进行会另发 video_cut_done）", "data": {}}
