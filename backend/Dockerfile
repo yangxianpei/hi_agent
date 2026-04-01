@@ -22,4 +22,4 @@ COPY pyproject.toml uv.lock /app/
 # 复制代码
 COPY . /app
 
-# CMD ["uv", "run", "run.py"]
+CMD ["uv", "run", "run.py"]
