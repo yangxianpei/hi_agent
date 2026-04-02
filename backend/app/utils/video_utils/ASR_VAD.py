@@ -4,10 +4,9 @@ from sklearn.cluster import AgglomerativeClustering
 from modelscope.pipelines import pipeline
 from modelscope.utils.constant import Tasks
 from app.utils.logger import get_logger
-from dotenv import load_dotenv
 import os
-logger = get_logger(__name__)   
-load_dotenv()
+
+logger = get_logger(__name__)
 
 class ASR_VAD:
     def __init__(self):
