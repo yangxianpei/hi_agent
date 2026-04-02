@@ -26,7 +26,7 @@ class ASR_VAD:
     def __init__(self):
         self.asr_model = None
         self.vad_pipeline = None
-
+        self.pipeline()
     def pipeline(self):
         if self.asr_model is None:
             asr_path = (os.getenv("ASR_MODEL") or "").strip()
@@ -105,7 +105,7 @@ class ASR_VAD:
 
     def run_pipeline(self, video_path, wav_file_path, expected_speakers=2):
         logger.info("开启初始化ASR_VAD 模型")
-        self.pipeline()
+       
         logger.info("初始化ASR_VAD 模型完成")
         logger.info("开始转换视频为音频")
         audio_path = self.video_to_audio(video_path, wav_file_path)
