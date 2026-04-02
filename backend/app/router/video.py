@@ -80,7 +80,7 @@ async def video(file: UploadFile = File(...)):
         f.write(file_content)
 
     emit(file_name, "queued", "任务已入队，等待处理", {"task_key": file_name})
-    process_executor.submit(process_video, str(file_path), str(wav_file_path), str(output_dir))
+    # process_executor.submit(process_video, str(file_path), str(wav_file_path), str(output_dir))
 
     return JSONResponse(
         {
