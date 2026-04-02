@@ -26,7 +26,7 @@ class ASR_VAD:
     def __init__(self):
         self.asr_model = None
         self.vad_pipeline = None
-        self.pipeline()
+
     def pipeline(self):
         if self.asr_model is None:
             asr_path = (os.getenv("ASR_MODEL") or "").strip()
@@ -41,7 +41,7 @@ class ASR_VAD:
             logger.info("正在初始化 FunASR AutoModel…")
             self.asr_model = AutoModel(
                 model=asr_path,
-                vad_model=vad_model,
+                vad_model=None,
                 punc_model=punc_path,
                 disable_update=True,
             )
@@ -82,7 +82,9 @@ class ASR_VAD:
         spec = np.abs(np.fft.rfft(x[:n_fft]))
         spec = spec / (np.sum(spec) + 1e-8)
         bands = np.array_split(spec, 12)
-        feat = np.asarray([zcr, energy] + [float(np.mean(b)) for b in bands], dtype=np.float32)
+        feat = np.asarray(
+            [zcr, energy] + [float(np.mean(b)) for b in bands], dtype=np.float32
+        )
         return feat / (np.linalg.norm(feat) + 1e-8)
 
     def diarize(self, embeddings, expected_speakers=2):
@@ -105,7 +107,7 @@ class ASR_VAD:
 
     def run_pipeline(self, video_path, wav_file_path, expected_speakers=2):
         logger.info("开启初始化ASR_VAD 模型")
-       
+        self.pipeline()
         logger.info("初始化ASR_VAD 模型完成")
         logger.info("开始转换视频为音频")
         audio_path = self.video_to_audio(video_path, wav_file_path)
@@ -151,7 +153,10 @@ class ASR_VAD:
         merged = [results[0].copy()]
         for cur in results[1:]:
             prev = merged[-1]
-            if cur["speaker"] == prev["speaker"] and cur["start"] - prev["end"] < max_gap:
+            if (
+                cur["speaker"] == prev["speaker"]
+                and cur["start"] - prev["end"] < max_gap
+            ):
                 prev["text"] += " " + cur["text"]
                 prev["end"] = cur["end"]
             else:
@@ -166,9 +171,13 @@ class ASR_VAD:
         while i < len(merged):
             cur = merged[i].copy()
             j = i
-            while _effective_len(cur.get("text", "")) < min_chars_to_next and j + 1 < len(merged):
+            while _effective_len(
+                cur.get("text", "")
+            ) < min_chars_to_next and j + 1 < len(merged):
                 nxt = merged[j + 1]
-                cur["text"] = (cur.get("text", "").strip() + " " + nxt.get("text", "").strip()).strip()
+                cur["text"] = (
+                    cur.get("text", "").strip() + " " + nxt.get("text", "").strip()
+                ).strip()
                 cur["end"] = max(cur.get("end", nxt["end"]), nxt.get("end"))
                 j += 1
             compact.append(cur)
